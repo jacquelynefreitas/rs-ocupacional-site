@@ -561,8 +561,8 @@
         <div class="produto-card" style="--accent:#5E86B3;">
           <span class="pc-tag">Canal de Denúncias</span>
           <h3>Canal de Denúncias</h3>
-          <p>Canal confidencial para colaboradores relatarem condutas fora das normas, com painel de gestão completo e conformidade com a LGPD.</p>
-          <a class="pc-link" href="canal-de-denuncias.html" target="_blank" rel="noopener">Conhecer o produto →</a>
+          <p>Canal confidencial para colaboradores relatarem condutas fora das normas, com painel de gestão completo e conformidade com a LGPD. A cada denúncia, os e-mails cadastrados na implantação recebem um aviso na hora.</p>
+          <a class="pc-link js-perfil-canal" href="canal-de-denuncias-empresas.html" target="_blank" rel="noopener">Conhecer o produto →</a>
         </div>
         <div class="produto-card" style="--accent:#6FAE8C;">
           <span class="pc-tag">Fatores Psicossociais</span>
@@ -881,6 +881,14 @@
 
 <!-- ===== RS OCUPACIONAL — Modal de proposta ===== -->
 <style>
+  .rs-perfil-opts{ display:grid; gap:12px; margin-top:4px; }
+  .rs-perfil-opt{ display:flex; align-items:center; gap:14px; padding:16px 18px; border:1.5px solid rgba(22,48,58,0.14); border-radius:12px; text-decoration:none; color:#16303A; background:#fff; transition:border-color .15s, background .15s, transform .15s; }
+  .rs-perfil-opt:hover{ border-color:#5E86B3; background:#F3F6FA; transform:translateY(-1px); }
+  .rs-perfil-opt .po-ic{ flex:0 0 42px; width:42px; height:42px; border-radius:10px; background:#E8EEF5; color:#5E86B3; display:flex; align-items:center; justify-content:center; }
+  .rs-perfil-opt .po-ic svg{ width:22px; height:22px; }
+  .rs-perfil-opt .po-t1{ font-weight:600; font-size:15px; }
+  .rs-perfil-opt .po-t2{ font-size:12.5px; color:rgba(22,48,58,0.65); margin-top:3px; line-height:1.4; }
+  .rs-perfil-opt .po-arrow{ margin-left:auto; color:#5E86B3; font-size:18px; }
   .rs-modal-overlay{
     position:fixed; inset:0; background:rgba(15,43,50,0.55); backdrop-filter:blur(3px);
     display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;
@@ -925,6 +933,38 @@
   }
 </style>
 
+<div class="rs-modal-overlay" id="rsPerfilOverlay">
+  <div class="rs-modal">
+    <button type="button" class="rs-modal-close" id="rsPerfilClose" aria-label="Fechar">&times;</button>
+    <h3>Canal de Denúncias</h3>
+    <p class="rs-modal-lead">Para mostrarmos a página certa, nos conte: você é…</p>
+    <div class="rs-perfil-opts">
+      <a class="rs-perfil-opt" href="canal-de-denuncias.html" target="_blank" rel="noopener">
+        <span class="po-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 13h18"/></svg></span>
+        <span><span class="po-t1" style="display:block;">Consultoria ou contabilidade</span><span class="po-t2" style="display:block;">Quero oferecer o canal aos clientes da minha carteira.</span></span>
+        <span class="po-arrow">→</span>
+      </a>
+      <a class="rs-perfil-opt" href="canal-de-denuncias-empresas.html" target="_blank" rel="noopener">
+        <span class="po-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/></svg></span>
+        <span><span class="po-t1" style="display:block;">Empresa, RH ou outro setor da empresa</span><span class="po-t2" style="display:block;">Quero contratar o canal para a minha empresa.</span></span>
+        <span class="po-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('rsPerfilOverlay');
+  function close(){ ov.classList.remove('open'); }
+  document.querySelectorAll('.js-perfil-canal').forEach(function(a){
+    a.addEventListener('click',function(e){ e.preventDefault(); ov.classList.add('open'); });
+  });
+  document.getElementById('rsPerfilClose').addEventListener('click',close);
+  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+  ov.querySelectorAll('.rs-perfil-opt').forEach(function(a){ a.addEventListener('click',close); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+})();
+</script>
 <div class="rs-modal-overlay" id="rsLeadModalOverlay">
   <div class="rs-modal">
     <button type="button" class="rs-modal-close" id="rsLeadModalClose" aria-label="Fechar">&times;</button>
