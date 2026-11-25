@@ -427,9 +427,15 @@
   .buy-frame-bar a{ color:var(--mint-deep); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
   .buy-frame iframe{ width:100%; height:860px; border:0; display:block; background:#fff; }
   @media (max-width:720px){ .buy-frame iframe{ height:980px; } }
-  .buy-alt{ display:none; padding:48px 28px; text-align:center; }
+  .buy-alt{ display:none; padding:72px 32px; text-align:center; }
   .buy-alt p{ max-width:420px; margin:0 auto 20px; font-size:14.5px; color:var(--ink-70); }
-  .buy-frame.is-button iframe{ display:none; }
+  .buy-frame.is-button iframe, .buy-frame.is-button .buy-frame-bar{ display:none; }
+  .buy-frame.is-button{ background:linear-gradient(180deg,var(--white),var(--mint-tint-1)); }
+  .buy-alt .alt-ic{ width:56px; height:56px; border-radius:16px; background:#D6F23A; color:var(--dark); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+  .buy-alt .alt-ic svg{ width:28px; height:28px; }
+  .buy-alt h2{ font-size:26px; color:var(--dark); margin-bottom:12px; }
+  .buy-alt .alt-steps{ margin-top:24px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font-size:12.5px; color:var(--ink-70); }
+  .buy-alt .alt-steps span{ padding:6px 14px; border:1px solid var(--line); border-radius:999px; background:#fff; }
   .buy-frame.is-button .buy-alt{ display:block; }
   .buy-after{ padding:0 0 88px; }
 </style>
@@ -507,8 +513,11 @@
         </div>
         <iframe id="buyIframe" title="Checkout do Canal de Denúncias" loading="lazy" allow="payment *; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe>
         <div class="buy-alt">
-          <p>Clique abaixo para abrir o checkout seguro, fazer o cadastro e escolher a forma de pagamento. Ao final, você volta para o formulário de ativação.</p>
-          <a id="buyOpen2" class="btn btn-mint" href="#" target="_blank" rel="noopener">Ir para o pagamento</a>
+          <div class="alt-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div>
+          <h2>Pagamento seguro</h2>
+          <p>Ao clicar, você abre o checkout seguro para fazer o cadastro e escolher a forma de pagamento. Assim que o pagamento for reconhecido, você é levado ao formulário de ativação.</p>
+          <a id="buyOpen2" class="btn btn-mint" href="#" target="_blank" rel="noopener" style="padding:17px 38px; font-size:15px;">Ir para o pagamento — R$ 89,90/mês</a>
+          <div class="alt-steps"><span>1. Cadastro</span><span>2. Pagamento</span><span>3. Formulário de ativação</span></div>
         </div>
       </div>
     </div>
@@ -576,7 +585,7 @@
   // 'embed'  = checkout dentro da página (iframe)
   // 'button' = botão que abre o checkout em nova aba (use se o checkout não aceitar ser embutido)
   var CHECKOUT_URL  = 'https://www.asaas.com/000/c/d2aa2q5htp5co3sh';
-  var CHECKOUT_MODE = 'embed';
+  var CHECKOUT_MODE = 'button';
 
   var frame = document.getElementById('buyFrame');
   var iframe = document.getElementById('buyIframe');
