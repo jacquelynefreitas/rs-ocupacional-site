@@ -454,11 +454,11 @@
       <div class="atv-intro">
         <span class="atv-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg> Compra concluída</span>
         <h1>Falta pouco para ativar o <em>Canal de Denúncias</em> da sua empresa.</h1>
-        <p>Preencha os dados do formulário para que a nossa equipe libere o seu acesso. As informações seguem direto para o nosso atendimento.</p>
+        <p>Pagamento reconhecido. Agora preencha o formulário: as informações seguem direto para o nosso atendimento e a nossa equipe libera o seu acesso em até 24h úteis.</p>
         <div class="atv-steps">
           <div class="atv-step"><span class="n">1</span><span class="t"><b>Envie os dados</b> do responsável, da empresa e os e-mails que vão receber os avisos de denúncia.</span></div>
-          <div class="atv-step"><span class="n">2</span><span class="t"><b>O WhatsApp abre com a mensagem pronta</b> para a RS Ocupacional — é só tocar em enviar.</span></div>
-          <div class="atv-step"><span class="n">3</span><span class="t"><b>Em até 48h úteis</b> você recebe por e-mail o link e QR Code do canal, o login do painel e o vídeo tutorial.</span></div>
+          <div class="atv-step"><span class="n">2</span><span class="t"><b>Nossa equipe recebe</b> os dados da sua compra na hora, direto no nosso atendimento.</span></div>
+          <div class="atv-step"><span class="n">3</span><span class="t"><b>Em até 24h úteis</b> entramos em contato para liberar o seu acesso e passar as orientações finais.</span></div>
         </div>
       </div>
 
@@ -491,16 +491,16 @@
             </div>
           </div>
 
-          <button type="submit" class="atv-submit" id="atvSubmit">Enviar e liberar meu acesso</button>
+          <button type="submit" class="atv-submit" id="atvSubmit">Enviar dados e solicitar liberação</button>
           <div class="atv-status" id="atvStatus"></div>
         </form>
 
         <div class="atv-done" id="atvDone">
           <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
           <h2>Dados recebidos!</h2>
-          <p>Abrimos o WhatsApp com a mensagem pronta para a RS Ocupacional. <b>Toque em enviar</b> para concluir a liberação do seu acesso.</p>
-          <p>Se o WhatsApp não abriu, use o botão abaixo.</p>
-          <a class="atv-whats" id="atvWhats" href="https://wa.me/5541998112897" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
+          <p>Nossa equipe recebeu os dados da sua compra e <b>entra em contato em até 24h úteis</b> para liberar o seu acesso, com as orientações finais.</p>
+          <p>Se preferir falar agora, use o botão abaixo.</p>
+          <a class="atv-whats" id="atvWhats" href="https://wa.me/5541998112897" target="_blank" rel="noopener">Falar pelo WhatsApp</a>
         </div>
       </div>
     </div>
@@ -551,12 +551,18 @@
 </script>
 <script>
 (function(){
+  // Se o formulário abrir dentro do checkout (iframe), sai do quadro e ocupa a página inteira
+  try { if (window.top !== window.self) { window.top.location.href = window.location.href; } } catch(e){}
+
   var WHATS = '5541998112897';
+  var EMAIL_VENDAS = 'atendimento@ocupacionalrs.com.br';
   var form = document.getElementById('atvForm');
   var status = document.getElementById('atvStatus');
   var btn = document.getElementById('atvSubmit');
   function v(id){ return document.getElementById(id).value.trim(); }
   function emailOk(e){ return /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(e); }
+  function comTempo(p, ms){ return Promise.race([p, new Promise(function(r){ setTimeout(function(){ r(false); }, ms); })]); }
+
   form.addEventListener('submit', function(ev){
     ev.preventDefault();
     status.className = 'atv-status'; status.textContent = '';
@@ -578,20 +584,42 @@
       '*Telefone principal:* ' + d.tel1 + '\n' +
       '*Segundo telefone:* ' + (d.tel2 || '—') + '\n\n' +
       'Por favor, liberem o acesso ao canal.';
-    var url = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg);
-    document.getElementById('atvWhats').href = url;
+    document.getElementById('atvWhats').href = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg);
 
     btn.disabled = true; btn.textContent = 'Enviando…';
-    var salvar = (typeof window.rsSaveLead === 'function') ? window.rsSaveLead({
+
+    // 1) CRM — lead marcado como PAGO
+    var crm = (typeof window.rsSaveLead === 'function') ? window.rsSaveLead({
       name: d.nome, company: d.empresa, email: d.email, phone: d.tel1,
-      notes: 'Compra concluída (Asaas) — aguardando liberação de acesso. E-mails de notificação: ' + notifs.join(', ') + (d.tel2 ? ' | 2º telefone: ' + d.tel2 : ''),
-      source: 'Ativação pós-compra', campaign: 'Canal de Denúncias (Empresas) — Ativação pós-compra'
+      status: 'Pago', paid: true,
+      notes: 'PAGO (Asaas) — aguardando liberação de acesso em até 24h úteis. E-mails de notificação: ' + notifs.join(', ') + (d.tel2 ? ' | 2º telefone: ' + d.tel2 : ''),
+      source: 'Compra paga — Canal de Denúncias (Empresas)', campaign: 'Canal de Denúncias (Empresas) — Ativação pós-compra'
     }).catch(function(){ return false; }) : Promise.resolve(false);
-    var t = new Promise(function(r){ setTimeout(r, 2500); });
-    Promise.race([salvar, t]).then(function(){
-      form.style.display = 'none';
-      document.getElementById('atvDone').style.display = 'block';
-      window.location.href = url;
+
+    // 2) E-mail para o atendimento
+    var mail = fetch('https://formsubmit.co/ajax/' + EMAIL_VENDAS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'PAGO — Canal de Denúncias (Empresas) — ' + d.empresa,
+        _template: 'table', _captcha: 'false', _replyto: d.email,
+        'Status': 'Pago — liberar acesso em até 24h úteis',
+        'Empresa': d.empresa, 'Responsável': d.nome, 'E-mail principal': d.email,
+        'E-mails para notificações': notifs.join(', '),
+        'Telefone principal': d.tel1, 'Segundo telefone': d.tel2 || '—'
+      })
+    }).then(function(r){ return r.ok; }).catch(function(){ return false; });
+
+    Promise.all([comTempo(crm, 6000), comTempo(mail, 6000)]).then(function(res){
+      btn.disabled = false; btn.textContent = 'Enviar dados e solicitar liberação';
+      if (res[0] || res[1]){
+        form.style.display = 'none';
+        document.getElementById('atvDone').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        status.className = 'atv-status err';
+        status.innerHTML = 'Não conseguimos enviar agora. Tente novamente ou <a href="' + document.getElementById('atvWhats').href + '" target="_blank" rel="noopener" style="text-decoration:underline;">envie os dados pelo WhatsApp</a>.';
+      }
     });
   });
 })();
