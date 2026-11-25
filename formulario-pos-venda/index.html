@@ -591,8 +591,8 @@
     // 1) CRM — lead marcado como PAGO
     var crm = (typeof window.rsSaveLead === 'function') ? window.rsSaveLead({
       name: d.nome, company: d.empresa, email: d.email, phone: d.tel1,
-      status: 'Pago', paid: true,
-      notes: 'PAGO (Asaas) — aguardando liberação de acesso em até 24h úteis. E-mails de notificação: ' + notifs.join(', ') + (d.tel2 ? ' | 2º telefone: ' + d.tel2 : ''),
+      status: 'Pago - conferir no Asaas', paid: false,
+      notes: 'PAGO (informado pelo cliente) — CONFERIR O PAGAMENTO NO ASAAS antes de liberar. Liberação em até 24h úteis. E-mails de notificação: ' + notifs.join(', ') + (d.tel2 ? ' | 2º telefone: ' + d.tel2 : ''),
       source: 'Compra paga — Canal de Denúncias (Empresas)', campaign: 'Canal de Denúncias (Empresas) — Ativação pós-compra'
     }).catch(function(){ return false; }) : Promise.resolve(false);
 
@@ -601,9 +601,9 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        _subject: 'PAGO — Canal de Denúncias (Empresas) — ' + d.empresa,
+        _subject: 'Nova compra (conferir no Asaas) — Canal de Denúncias (Empresas) — ' + d.empresa,
         _template: 'table', _captcha: 'false', _replyto: d.email,
-        'Status': 'Pago — liberar acesso em até 24h úteis',
+        'Status': 'Compra informada pelo cliente — conferir o pagamento no Asaas e liberar acesso em até 24h úteis',
         'Empresa': d.empresa, 'Responsável': d.nome, 'E-mail principal': d.email,
         'E-mails para notificações': notifs.join(', '),
         'Telefone principal': d.tel1, 'Segundo telefone': d.tel2 || '—'
